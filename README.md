@@ -1,2 +1,0 @@
-# teamscheduller
-Team Scheduller
