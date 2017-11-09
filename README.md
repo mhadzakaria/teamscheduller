@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # README
 
 This README would normally document whatever steps are necessary to get the
@@ -22,3 +23,7 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+=======
+# teamscheduller
+Team Scheduller
+>>>>>>> f7eccb60ce1bf7fb56dd6476b89c6777704e5926
