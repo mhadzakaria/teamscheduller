@@ -1,0 +1,14 @@
+<%= form_for :c_pos, url: add_position_personnels_path do |f| %>
+<table class="table table-stripped table-bordered">
+<tr>
+	<th>Personnel</th>
+	<td>: <%= @personnel.name %></td>
+</tr><tr>
+	<%= f.hidden_field :personnel_id, {value: params[:id] } %>
+	<th><%= f.label :position_id %></th>
+	<td>: <%= select("c_pos", "position_id", Position.all.collect {|p| [ p.name, p.id ] }) %></td>
+</tr><tr>
+	<td><%= f.submit 'Simpan' %></td>
+</tr>
+<% end %>
+</table>

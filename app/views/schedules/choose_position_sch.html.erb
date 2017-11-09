@@ -1,0 +1,8 @@
+<%=notice%><br>
+<%= form_for :resume, url: resumes_path, method: :post do |f| %>
+	<%= f.hidden_field :schedule_id, {value: params[:resume][:schedule_id]} %>
+	<%= f.hidden_field :personnel_id, {value: params[:id]} %>
+	<%= f.label :position_id %>
+	<%= select("resume", "position_id", @personnel.map{|p| [p.name, p.id]}) %>
+	<%= f.submit %>
+<%end%>

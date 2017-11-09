@@ -1,0 +1,16 @@
+<% if @position.errors.any? %>
+	<div class="alert alert-danger">
+    	<h2>Terdapat <%= @position.errors.size %> error</h2>
+    	Field Name <%= @position.errors[:name][0] %>
+	</div>
+<% end %>
+<%# i = 0 %>
+<%= form_for :position, url: positions_path, method: :post do |f| %>
+	<%# while i < 5 do %>
+	<!-- form_for(@post, data: { behavior: "autosave" }, html: { name: "go" }) -->
+		<%= f.label :name%>
+		<%= f.text_field :name%><br>
+		<%# i+=1 %>
+	<%#end%>
+	<%= f.submit %>
+<%end%>

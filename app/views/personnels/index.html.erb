@@ -1,0 +1,16 @@
+<table class="table table-bordered">
+	<tr>
+		<th width="50px">No.</th>
+		<th>Nama Personel</th>
+		<th>Aksi</th>
+	</tr>
+	<% @personnels.each_with_index do |p, i| %>
+	<tr>
+		<td><%= i+1 %></td>
+		<td><%= link_to p.name, personnel_path(p) %><%= '*' if Personnel.hitung_posisi(p) > 1 %></td>
+		<td><%= link_to 'Edit', edit_personnel_path(p)%> | <%= link_to 'Hapus', personnel_path(p), method: :delete,data: {confirm: 'Yakin?'} %> | <%= link_to 'Tambah Posisi', choose_position_personnel_path(p.id) %></td>
+	</tr>
+	<%end%>
+</table>
+* <i>Personnel dengan berbagai posisi, utamakan personnel yang hanya memiliki 1 posisi untuk di masukkan ke jadwal.</i></br>
+<%= link_to '+New Personil', new_personnel_path %>

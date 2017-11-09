@@ -1,0 +1,14 @@
+<% if @schedule.errors.any? %>
+	<div class="alert alert-danger">	
+    <h2>Terdapat <%= @schedule.errors.size %> error</h2>
+		<% @schedule.errors.full_messages.each do |e| %>
+			<%= e %>
+		<%end%>
+	</div>
+<%end%>
+<%= form_for :schedule, url: schedules_path, method: :post do |f| %>
+	<%= f.label :perform_date %>
+	<% @date = ScheduleHelper.range %>
+	<%= select("schedule", "perform_date", @date.select{|p| [p] if p.saturday?} ) %>
+	<%= f.submit %>
+<%end%>

@@ -1,0 +1,8 @@
+
+<%=notice%><br>
+<%= form_for :resume, url: choose_position_sch_personnel_path(params[:id]), method: :post do |f| %>
+	<%= f.hidden_field :personnel_id, {value: params[:id]} %>
+	<%= f.label :schedule_id %>
+	<%= select("resume", "schedule_id", @schedules.collect{|p| [p.perform_date, p.id]}) %>
+	<%= f.submit %>
+<%end%>

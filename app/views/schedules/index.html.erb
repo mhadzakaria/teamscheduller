@@ -1,0 +1,26 @@
+<table class="table table-bordered">
+	<tr>
+		<th>Tanggal</th>
+		<th>Keterangn</th>
+		<th>Personnel | Posisi</th>
+	</tr>
+	<% @schedules.each do |s| %>
+		<tr>
+			<td>
+				<%= (s.perform_date).strftime('%d-%m-%Y') %>
+			</td>
+			<td>
+				<%= Schedule.schedule_format(s.id) %>
+			</td>
+			<td>
+				<% Schedule.res_position(s.id).each_with_index do |p, i| %>
+					<%= i+1 %>. 
+					<%= p.personnel.name %> | 
+					<%= p.position.name %> | 
+					<%= link_to 'Hapus', resume_path(p), method: :delete, data: {confirm: 'Yakin?'} %><br>
+				<%end%>
+			</td>
+		</tr>
+	<%end%>
+</table>
+<%= link_to '+New Schedule', new_schedule_path %>

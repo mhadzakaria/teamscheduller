@@ -1,0 +1,11 @@
+<% if @position.errors.any? %>
+	<div class="alert alert-danger">
+    	<h2>Terdapat <%= @position.errors.size %> error</h2>
+    	Field Name <%= @position.errors[:name][0] %>
+	</div>
+<% end %>
+<%= form_for :position, url: position_path(@position), method: :put do |f| %>
+	<%= f.label :name %>
+	<%= f.text_field :name %>
+	<%= f.submit %>
+<%end%>

@@ -1,0 +1,60 @@
+<h2>Resume Personnel</h2>
+<table class="table table-bordered">
+	<tr>
+		<th>Name :</th>
+		<td><%= @personnel.name %><br><%= link_to 'Edit Personnel', edit_personnel_path(params[:id]) %></td>
+	</tr>
+	<tr>
+		<th>Position :</th>
+		<td>
+			<% @position.each_with_index do |p, i| %>
+			<%= i+1 %>. <%= p %><br>
+			<%end%>
+		</td>
+	</tr>
+	<tr>
+		<th>Jadwal :</th>
+		<td>
+			<% @res_schedule.each_with_index do |p, i| %>
+				<%= i+1 %>. 
+				<%= (p.schedule.perform_date).strftime('%d %B %Y') %> | 
+				<%= p.position.name %></br>
+			<%end%>
+		</td>
+	</tr>
+</table>
+<hr>
+<h2>Input Jadwal</h2>
+<%= form_for :resume, url: choose_position_sch_personnel_path(params[:id]), method: :post do |f| %>
+	<%= f.hidden_field :personnel_id, {value: params[:id]} %>
+	<strong>Tanggal: </strong>
+	<%= select("resume", "schedule_id", @schedule_able.collect{|p| [p.perform_date, p.id]}) %>
+	<%= f.submit %>
+<%end%>
+<% if notice %>
+<table class="table table-bordered table-striped">
+	<tr>
+		<th>Tanggal</th>
+		<th>Keterangn</th>
+		<th>Personnel | Posisi</th>
+	</tr>
+	<% @schedules.each do |s| %>
+		<tr>
+			<td>
+				<%= (s.perform_date).strftime('%d-%m-%Y') %>
+			</td>
+			<td>
+				<%= Schedule.schedule_format(s.id) %>
+			</td>
+			<td>
+				<% Schedule.res_position(s.id).each_with_index do |p, i| %>
+					<%= i+1 %>. 
+					<%= p.personnel.name %> | 
+					<%= p.position.name %> | 
+					<%= link_to 'Hapus', resume_path(p), method: :delete, data: {confirm: 'Yakin?'} %><br>
+				<%end%>
+			</td>
+		</tr>
+	<%end%>
+</table>
+<%end%>

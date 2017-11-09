@@ -1,0 +1,16 @@
+<strong><%=notice%></strong>
+<table class="table table-bordered">
+	<tr>
+		<th width="50px">No.</th>
+		<th>Nama Posisi</th>
+		<th>Aksi</th>
+	</tr>
+	<% @positions.each_with_index do |p, i| %>
+	<tr>
+		<td><%= i+1 %></td>
+		<td><%= p.name %></td>
+		<td><%= link_to 'Edit', edit_position_path(p) %> | <%= link_to 'Hapus', position_path(p), method: :delete, data: {confirm: 'Yakin?'} %></td>
+	</tr>
+	<%end%>
+</table>
+<%= link_to '+New Position', new_position_path %>
