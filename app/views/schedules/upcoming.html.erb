@@ -1,0 +1,16 @@
+<h2>Upcoming Schedule</h2><br>
+<%= link_to 'Download as .pdf', schedules_path(format: :pdf) %> | 
+<%= link_to '+New Schedule', new_schedule_path %> | <%= link_to 'History', history_schedules_path %>
+<hr>
+<table class="table table-bordered">
+	<tr>
+		<th>Tanggal</th>
+		<th>Keterangn</th>
+		<th>Personnel | Posisi</th>
+	</tr>
+	<%= render partial: 'table', collection: @schedules, as: :s, locals: {message: ''}%>
+</table>
+<%= will_paginate @schedules %>
+<hr>
+<%= render partial: 'form_date_range'%>
+<br>
