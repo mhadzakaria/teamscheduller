@@ -1,0 +1,51 @@
+wb = xlsx_package.workbook
+wb.use_autowidth = true
+  title = wb.styles.add_style(:border=> {:style => :thin, :color => "000000"})
+  lebar = wb.styles.add_style(:width => 10)
+  wb.add_worksheet(name: "Products") do |sheet|
+    sheet.add_row ['Jadwal Manggung dan Penempatan Posisi']
+    sheet.merge_cells "a1:j1"
+=begin
+    sheet.add_row ['Posisi', 'Tanggal']
+    sheet.merge_cells "a2:a3"
+    sheet.merge_cells "B2:E2"
+      
+    sheet.add_row ['',@schedulez.map(&:perform_date)].flatten
+    @positions.each do |p|
+      sheet.add_row [p.name, (Resume.where("positions.id = #{p.id}").joins(:position).map{|p| ["#{p.personnel_id}: #{p.position.name}"]})].flatten
+    end
+=end
+    sheet.add_row ['']
+    sheet.merge_cells "B3:i3"
+    sheet.add_row ['Tanggal', 'Posisi dan Personnel'].insert(9, "Keterangan"), :style=>title
+    
+    style = Array.new(9, title)
+    style[9] = lebar
+    @schedulez.each do |p|
+      sheet.add_row [p.perform_date, Resume.excel(p.id)].flatten.insert(9, p.schedule_format), :style=>style, :types => :string
+    end
+
+    sheet.merge_cells "a11:i11"
+    sheet.merge_cells "a12:j20"
+    sheet.rows[0].cells[1].value='a'
+    sheet.add_row ['*Spesial Note'] , :style=>title
+    sheet.add_row ["#{@note}"] , :style=>title
+  end
+
+
+  wb.add_worksheet(name: "bulan") do |sheet|
+    sheet.add_row ['Jadwal Manggung dan Penempatan Posisi'] 
+    sheet.merge_cells "a1:j1"
+
+    sheet.add_row [''] 
+    sheet.merge_cells "B3:i3"
+    sheet.add_row ['Tanggal', 'Posisi dan Personnel'].insert(9, "Keterangan")
+    @schedulez.each do |p|
+      sheet.add_row [p.perform_date, Resume.excel(p.id)].flatten.insert(9, p.schedule_format)
+    end
+
+    sheet.merge_cells "a11:i11"
+    sheet.merge_cells "a12:j20"
+    sheet.add_row ['*Spesial Note'] 
+    sheet.add_row ["#{@note}"] 
+  end
