@@ -1,26 +1,25 @@
+<%= render partial: 'form_dialog'%> | 
+<%= link_to 'Download PDF', schedules_path(format: :pdf) %> | 
+<%= link_to '+New Schedule', new_schedule_path %> | <%= link_to 'History', history_schedules_path %>
+<hr>
 <table class="table table-bordered">
 	<tr>
 		<th>Tanggal</th>
 		<th>Keterangn</th>
 		<th>Personnel | Posisi</th>
 	</tr>
-	<% @schedules.each do |s| %>
-		<tr>
-			<td>
-				<%= (s.perform_date).strftime('%d-%m-%Y') %>
-			</td>
-			<td>
-				<%= Schedule.schedule_format(s.id) %>
-			</td>
-			<td>
-				<% Schedule.res_position(s.id).each_with_index do |p, i| %>
-					<%= i+1 %>. 
-					<%= p.personnel.name %> | 
-					<%= p.position.name %> | 
-					<%= link_to 'Hapus', resume_path(p), method: :delete, data: {confirm: 'Yakin?'} %><br>
-				<%end%>
-			</td>
-		</tr>
-	<%end%>
+	<%= render partial: 'table', collection: @schedules, as: :s, locals: {message: ''}%>
 </table>
-<%= link_to '+New Schedule', new_schedule_path %>
+
+<%= will_paginate @schedules %><br>
+ <!--  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+</head>
+<body>
+<label for="from">From</label>
+<input type="text" id="from" name="from">
+<label for="to">to</label>
+<input type="text" id="to" name="to"> 
+-->
