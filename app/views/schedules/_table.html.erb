@@ -1,0 +1,17 @@
+<tr>
+	<td>
+		<%= s.perform_date %>
+	</td>
+	<td>
+		<%= s.schedule_format %>
+	</td>
+	<td>
+		<% s.res_position.each do |p| %>
+			<%= p.personnel.name %> | <%= p.position.name %>
+			<% if current_user.role == 0 %>
+				<%= link_to 'hapus', resume_path(p), method: :delete, data: {confirm: 'Yakin?'} %>
+			<%end%>
+			<br>
+		<%end%>
+	</td>
+</tr>
