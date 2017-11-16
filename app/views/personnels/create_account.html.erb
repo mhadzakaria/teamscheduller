@@ -1,0 +1,10 @@
+<% if @user.errors.any? %>
+	<div class="alert alert-danger">
+		<h2>Terdapat <%= @user.errors.size %> error</h2>
+		<% @user.errors.full_messages.each do |e| %>
+			<%= e %><br>
+		<%end%>
+	</div>
+<%end%>
+<h2>Create Account</h2>
+<%= render partial: "users/registrations/form", locals:{resource: @user, url: save_account_personnels_path} %>
