@@ -1,0 +1,4 @@
+<tr>
+	<td><%= link_to p.name, personnel_path(p) %><%= '*' if p.hitung_posisi > 1 %></td>
+	<td><%= link_to 'Edit', edit_personnel_path(p)%> | <%= link_to 'Hapus', personnel_path(p), method: :delete,data: {confirm: 'Yakin?'} %> | <%= link_to 'Tambah Posisi', choose_position_personnel_path(p.id) %> | <%= link_to 'Buat Akun', create_account_personnel_path(p.id) if p.check_account.blank? %></td>
+</tr>
