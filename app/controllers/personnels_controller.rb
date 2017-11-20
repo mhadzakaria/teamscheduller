@@ -3,14 +3,15 @@ class PersonnelsController < ApplicationController
 	before_action :authenticate_user!
 	
 	def index
-		@personnels = Personnel.all
+		@personnels = Personnel.paginate(:page => params[:page], :per_page => 5)
 	end
 
 	def show
-		@schedules = Schedule.where(id: params[:id])
-		@position = @personnel.positions.collect(&:name)
-		@res_schedule = Resume.joins(:schedule, :position).where(personnel_id: params[:id])
+		@schedules = Schedule.where(id: params[:schedule_id])
+		@position = @personnel.show_position
+		@res_schedule = Resume.next_schedule(params[:id])
 		@schedule_able = Schedule.schedule_not(params[:id])
+		@position_open = Position.post_choose(params[:id], params[:schedule_id])
 	end
 
 	def new
@@ -36,7 +37,6 @@ class PersonnelsController < ApplicationController
 		else
 			render :edit, notice: 'Gagal buat Personnel'
 		end
-
 	end
 
 	def destroy
@@ -58,6 +58,21 @@ class PersonnelsController < ApplicationController
 		redirect_to personnels_path
 	end
 
+	def create_account
+		@user = User.new
+	end
+
+	def save_account
+		# render plain: params[:user].inspect
+		@user = User.new(create_account_params)
+		if @user.save
+			redirect_to personnels_url, notice: 'Succesfully create a new account.'
+		else
+			error =  @user.errors.full_messages
+			render :create_account
+		end
+	end
+
 	private
 	def personnel_params
 		params.require(:personnel).permit(:name)
@@ -65,5 +80,9 @@ class PersonnelsController < ApplicationController
 
 	def set_personnel
 		@personnel = Personnel.find(params[:id])
+	end
+
+	def create_account_params
+		params.require(:user).permit(:role, :email, :password, :password_confirmation, :personnel_id)
 	end
 end
