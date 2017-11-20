@@ -1,8 +1,8 @@
-  <% if @personnel.errors.any? %>
-<div class="alert alert-danger">
-    <h2>Terdapat <%= @personnel.errors.size %> error</h2>
-      Field Name <%= @personnel.errors[:name][0] %>
-</div>
+ <% if @personnel.errors.any? %>
+	<div class="alert alert-danger">
+	    <h2>Terdapat <%= @personnel.errors.size %> error</h2>
+	      Field Name <%= @personnel.errors[:name][0] %>
+	</div>
 <% end %>
 <%= form_for :personnel, url: personnel_path(@personnel), method: :put do |f| %>
 	<%= f.label :name %>

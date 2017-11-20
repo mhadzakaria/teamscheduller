@@ -1,3 +1,40 @@
+<head>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <style>
+  .toggler { width: 500px; height: 200px; }
+  #button { padding: .5em 1em; text-decoration: none; }
+  #effect { width: 240px; height: 170px; padding: 0.4em; position: relative; }
+  #effect h3 { margin: 0; padding: 0.4em; text-align: center; }
+  </style>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+  $( function() {
+    // run the currently selected effect
+    function runEffect() {
+      var options = {};
+ 
+      // Run the effect
+      $( "#effect" ).show( "blind", options, 500);
+    };
+ 
+    //callback function to bring a hidden box back
+    function callback() {
+      setTimeout(function() {
+        $( "#effect:visible" ).removeAttr( "style" ).fadeOut();
+      }, 1000 );
+    };
+ 
+    // Set effect from select menu value
+    $( "#button" ).on( "click", function() {
+      runEffect();
+    });
+ 
+    $( "#effect" ).hide();
+  } );
+
+  </script>
+</head>
 <h2>Resume Personnel</h2>
 <table class="table table-bordered">
 	<tr>
@@ -18,18 +55,28 @@
 			<% @res_schedule.each_with_index do |p, i| %>
 				<%= i+1 %>. 
 				<%= (p.schedule.perform_date).strftime('%d %B %Y') %> | 
-				<%= p.position.name %></br>
+				<%= p.position.name %> | 
+				<%=link_to 'Hapus', resume_path(p), method: :delete, data: {confirm: 'Yakin?'} %></br>
 			<%end%>
+			<%= link_to 'History', history_schedules_path %>
 		</td>
+	</tr>
+	<tr>
+		<th>Email :</th>
+		<td> <%= @personnel.email %></td>
 	</tr>
 </table>
 <hr>
 <h2>Input Jadwal</h2>
-<%= form_for :resume, url: choose_position_sch_personnel_path(params[:id]), method: :post do |f| %>
+<%= form_for :resume do |f| %>
 	<%= f.hidden_field :personnel_id, {value: params[:id]} %>
-	<strong>Tanggal: </strong>
-	<%= select("resume", "schedule_id", @schedule_able.collect{|p| [p.perform_date, p.id]}) %>
-	<%= f.submit %>
+	<% if @schedule_able.any? %>
+		<strong>Tanggal: </strong>
+		<%= select("resume", "schedule_id", @schedule_able.collect{|p| [p.perform_date, p.id]}) %>
+		<%= f.submit 'Choose', :html => {:id => "button"}%>
+	<% else %>
+		Jadwal sudah terisi semua
+	<% end %>
 <%end%>
 <% if notice %>
 <table class="table table-bordered table-striped">
@@ -44,10 +91,10 @@
 				<%= (s.perform_date).strftime('%d-%m-%Y') %>
 			</td>
 			<td>
-				<%= Schedule.schedule_format(s.id) %>
+				<%= s.checking_formation %>
 			</td>
 			<td>
-				<% Schedule.res_position(s.id).each_with_index do |p, i| %>
+				<% s.res_position.each_with_index do |p, i| %>
 					<%= i+1 %>. 
 					<%= p.personnel.name %> | 
 					<%= p.position.name %> | 
@@ -58,3 +105,45 @@
 	<%end%>
 </table>
 <%end%>
+<% if params[:schedule_id] && notice.blank? %>
+<table class="table table-bordered table-striped">
+	<tr>
+		<th>Tanggal</th>
+		<th>Keterangn</th>
+		<th>Personnel | Posisi (Please choose position)</th>
+	</tr>
+	<% @schedules.each do |s| %>
+		<tr>
+			<td>
+				<%= (s.perform_date).strftime('%d-%m-%Y') %>
+			</td>
+			<td>
+				<%= s.checking_formation %>
+			</td>
+			<td>
+				<% @position_open.each do |p| %>
+					<%= form_for :resume, url: resumes_path do |f| %>
+					<%= f.hidden_field :schedule_id, {value: params[:schedule_id] } %>
+					<%= f.hidden_field :position_id, {value: p[0] } %>
+					<%= f.hidden_field :personnel_id, {value: params[:id] } %><br>
+					<%= @personnel.name %> | 
+						<%= link_to p[1], personnels_path %>
+						<%= f.submit 'Select' %><br>
+					<%end%>
+				<%end%>
+			</td>
+		</tr>
+	<%end%>
+</table>
+<%end%>
+ 
+<button id="button" class="ui-state-default ui-corner-all">Run Effect</button>
+
+<div class="toggler">
+  <div id="effect" class="ui-widget-content ui-corner-all">
+    <h3 class="ui-widget-header ui-corner-all">Show</h3>
+    <p>
+      Etiam libero neque, luctus a, eleifend nec, semper at, lorem. Sed pede. Nulla lorem metus, adipiscing ut, luctus sed, hendrerit vitae, mi.
+    </p>
+  </div>
+</div>
