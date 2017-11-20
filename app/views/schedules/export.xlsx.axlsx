@@ -1,51 +1,86 @@
+col_widths= [1,2,3,4,5] 
 wb = xlsx_package.workbook
+setup = {:orientation => :landscape, paper_size: 10}
 wb.use_autowidth = true
-  title = wb.styles.add_style(:border=> {:style => :thin, :color => "000000"})
-  lebar = wb.styles.add_style(:width => 10)
-  wb.add_worksheet(name: "Products") do |sheet|
-    sheet.add_row ['Jadwal Manggung dan Penempatan Posisi']
-    sheet.merge_cells "a1:j1"
-=begin
-    sheet.add_row ['Posisi', 'Tanggal']
-    sheet.merge_cells "a2:a3"
-    sheet.merge_cells "B2:E2"
-      
-    sheet.add_row ['',@schedulez.map(&:perform_date)].flatten
-    @positions.each do |p|
-      sheet.add_row [p.name, (Resume.where("positions.id = #{p.id}").joins(:position).map{|p| ["#{p.personnel_id}: #{p.position.name}"]})].flatten
-    end
-=end
+
+  value = wb.styles.add_style(:border=>{
+                                      :style => :thin, 
+                                      :color => "000000"
+                                      })
+  value_head = wb.styles.add_style(:border=> {
+                                            :style => :thin, 
+                                            :color => "000000"
+                                            },
+                                    sz: 12)
+  title = wb.styles.add_style(:alignment =>{
+                                          horizontal: :center, 
+                                          vertical: :center,
+                                          wrap_text: true
+                                          },
+                                b: true, 
+                                :types => [:string])
+  header = wb.styles.add_style(:alignment =>{
+                                          horizontal: :center, 
+                                          vertical: :center,
+                                          wrap_text: true
+                                          }, 
+                                b: true, 
+                                :border=> {
+                                          :style => :thin, 
+                                          :color => "000000"
+                                          })
+  ket = wb.styles.add_style(:border=>{
+                                      :style => :thin, 
+                                      :color => "000000"
+                                      }, 
+                                :alignment => {
+                                          wrap_text: true
+                                          }, 
+                                b: true, 
+                                types: :string)
+  note  = wb.styles.add_style(:alignment=>{
+                                        vertical: :top
+                                        })
+  # ({:border => { :style => :thick, :color => 'F000000', :name => :left, :edges => [:left] }})  
+  
+  wb.add_worksheet(name: "Jadwal", :page_setup => setup) do |sheet|
+    sheet.add_row ['Jadwal Manggung dan Penempatan Posisi'], :style => title, sz: 17, :height => 40
+    sheet.merge_cells "a1:f1"
     sheet.add_row ['']
-    sheet.merge_cells "B3:i3"
-    sheet.add_row ['Tanggal', 'Posisi dan Personnel'].insert(9, "Keterangan"), :style=>title
+
+    sheet.add_row ['Position','Tanggal', '', '', '', ''], :style => header, sz: 14, :height => 20
+    sheet.merge_cells "b3:f3"
+    sheet.merge_cells "a3:a4"
+    tanggal_column = [''] + @schedulez.map{|p| p.perform_date.strftime("%d %b %y")}
+    positions = Position.all
+    sheet.add_row tanggal_column, :style => value
     
-    style = Array.new(9, title)
-    style[9] = lebar
-    @schedulez.each do |p|
-      sheet.add_row [p.perform_date, Resume.excel(p.id)].flatten.insert(9, p.schedule_format), :style=>style, :types => :string
+    positions.each do |p|
+      row_entry = []
+      row_entry << p.name
+      @schedulez.each do |s|
+        pnls = (s.resume.find_all {|r|r.position_id == p.id})
+        text_team = []
+        
+        pnls.each do |pnl|
+          text_team << pnl.personnel.name 
+        end
+
+        row_entry << text_team.join(", ")
+      end
+      sheet.add_row row_entry, :style => [value_head, value, value, value, value, value]
     end
 
-    sheet.merge_cells "a11:i11"
-    sheet.merge_cells "a12:j20"
-    sheet.rows[0].cells[1].value='a'
-    sheet.add_row ['*Spesial Note'] , :style=>title
-    sheet.add_row ["#{@note}"] , :style=>title
-  end
-
-
-  wb.add_worksheet(name: "bulan") do |sheet|
-    sheet.add_row ['Jadwal Manggung dan Penempatan Posisi'] 
-    sheet.merge_cells "a1:j1"
-
-    sheet.add_row [''] 
-    sheet.merge_cells "B3:i3"
-    sheet.add_row ['Tanggal', 'Posisi dan Personnel'].insert(9, "Keterangan")
-    @schedulez.each do |p|
-      sheet.add_row [p.perform_date, Resume.excel(p.id)].flatten.insert(9, p.schedule_format)
+    keterangans = ["Keterangan"]
+    @schedulez.each do |s|
+        keterangans << s.checking_formation
     end
 
-    sheet.merge_cells "a11:i11"
-    sheet.merge_cells "a12:j20"
-    sheet.add_row ['*Spesial Note'] 
-    sheet.add_row ["#{@note}"] 
+    sheet.add_row keterangans, style: [ket, value, value, value, value, value], :height => 20
+
+    sheet.add_row ['']
+    sheet.merge_cells "a14:f21"
+    sheet.add_row ['*Spesial Note'], b: true
+    sheet.add_row ["#{@note}"]
+    sheet.column_widths 15, 25, 25, 25, 25, 25, 25 
   end

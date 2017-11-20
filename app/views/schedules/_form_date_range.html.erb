@@ -99,15 +99,15 @@
 </head>
 
 <div id="dialog-form" title="Create note">
-  <%= form_for :range, url: export_schedules_path(format: :xlsx), html: {id: 'position', name: 'position'} do |f| %>
+  <%= form_for :range, url: export_excel_schedules_path(format: :xlsx), html: {id: 'position', name: 'position'} do |f| %>
     <div class="form-group">
       <%= f.label :note %>
       <%= f.text_area :note, {class: 'form-control'}%><br>
     </div>
     <div class="form-group">
       <%= f.label :from , value: 'Tanggal' %>
-      <%= f.text_field :from, {id: "from", placeholder: 'From', type: 'date', class: 'form-control'} %>
-      <%= f.text_field :to, {id: "to", placeholder: 'To', type: 'date', class: 'form-control'} %>
+      <%= f.text_field :from, {id: "from", placeholder: 'From', class: 'form-control'} %>
+      <%= f.text_field :to, {id: "to", placeholder: 'To', class: 'form-control'} %>
     </div>
   <%end%>
 </div>

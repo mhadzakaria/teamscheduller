@@ -59,7 +59,7 @@
 <body>
  
 <div id="dialog-form" title="Create note">
- 	<%= form_for :note, url: export_schedules_path(format: :xlsx), html: {id: 'position', name: 'position'} do |f| %>
+ 	<%= form_for :note, url: export_excel_schedules_path(format: :xlsx), html: {id: 'position', name: 'position'} do |f| %>
 		<%= f.label :name %>
 		<%= f.text_area :name%><br>
 	<%end%>

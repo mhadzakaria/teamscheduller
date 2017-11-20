@@ -1,5 +1,5 @@
 <%= render partial: 'form_dialog'%> | 
-<%= link_to 'Download PDF', schedules_path(format: :pdf) %> | 
+<%= link_to 'Download PDF', export_pdf_schedules_path(format: :pdf) %> | 
 <%= link_to '+New Schedule', new_schedule_path %> | <%= link_to 'History', history_schedules_path %>
 <hr>
 <table class="table table-bordered">

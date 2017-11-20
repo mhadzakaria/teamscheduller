@@ -1,4 +1,3 @@
-
 <%=notice%><br>
 <%= form_for :resume, url: choose_position_sch_personnel_path(params[:id]), method: :post do |f| %>
 	<%= f.hidden_field :personnel_id, {value: params[:id]} %>
